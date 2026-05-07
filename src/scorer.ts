@@ -89,9 +89,20 @@ export async function scoreStage2(
 
   const scoreMap = new Map(parsed.articles.map((e) => [e.url, e.score]));
 
-  return articles
+  const selected = articles
     .filter((a) => scoreMap.has(a.url))
     .map((a) => ({ ...a, score: scoreMap.get(a.url) as number }))
     .sort((a, b) => b.score - a.score)
     .slice(0, 5);
+
+  if (selected.length >= 5) {
+    return selected;
+  }
+
+  const selectedUrls = new Set(selected.map((a) => a.url));
+  const fallback = articles
+    .filter((a) => !selectedUrls.has(a.url))
+    .sort((a, b) => b.score - a.score);
+
+  return [...selected, ...fallback].slice(0, 5);
 }

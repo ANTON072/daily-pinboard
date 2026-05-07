@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { scoreStage1 } from "./scorer";
-import type { Article } from "./types";
+import { scoreStage1, scoreStage2 } from "./scorer";
+import type { Article, FetchedArticle } from "./types";
 
 const mockArticles: Article[] = [
   {
@@ -165,5 +165,112 @@ describe("scoreStage1", () => {
     expect(
       result.every((a) => ["https://example.com/1", "https://example.com/2"].includes(a.url)),
     ).toBe(true);
+  });
+});
+
+const makeFetchedArticle = (n: number, score: number): FetchedArticle => ({
+  url: `https://example.com/${n}`,
+  title: `Article ${n}`,
+  description: `Description ${n}`,
+  tags: [],
+  score,
+  fetchedTitle: `Fetched Title ${n}`,
+  fetchedDescription: `Fetched Description ${n}`,
+  bodyText: `Body text ${n}`,
+});
+
+describe("scoreStage2", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("上位5件をスコア降順で返す", async () => {
+    const articles = Array.from({ length: 10 }, (_, i) => makeFetchedArticle(i + 1, 10 - i));
+    const scores = articles.map((a, i) => ({ url: a.url, score: 10 - i }));
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(mockOpenAIResponse(scores)));
+
+    const result = await scoreStage2(articles, "test-api-key");
+
+    expect(result).toHaveLength(5);
+    expect(result[0].url).toBe("https://example.com/1");
+    expect(result[4].url).toBe("https://example.com/5");
+  });
+
+  it("fetchedTitle と fetchedDescription をプロンプトに使用する", async () => {
+    const articles = Array.from({ length: 3 }, (_, i) => makeFetchedArticle(i + 1, 5));
+    const scores = articles.map((a) => ({ url: a.url, score: 5 }));
+    const mockFetch = vi.fn().mockResolvedValueOnce(mockOpenAIResponse(scores));
+    vi.stubGlobal("fetch", mockFetch);
+
+    await scoreStage2(articles, "test-api-key");
+
+    const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+    const content = body.messages[1].content;
+    expect(content).toContain("Fetched Title 1");
+    expect(content).toContain("Fetched Description 1");
+  });
+
+  it("fetchedTitle が空の場合は title にフォールバックする", async () => {
+    const article: FetchedArticle = {
+      url: "https://example.com/1",
+      title: "Original Title",
+      description: "Original Description",
+      tags: [],
+      score: 5,
+      fetchedTitle: "",
+      fetchedDescription: "",
+      bodyText: "",
+    };
+    const scores = [{ url: article.url, score: 7 }];
+    const mockFetch = vi.fn().mockResolvedValueOnce(mockOpenAIResponse(scores));
+    vi.stubGlobal("fetch", mockFetch);
+
+    await scoreStage2([article], "test-api-key");
+
+    const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+    const content = body.messages[1].content;
+    expect(content).toContain("Original Title");
+    expect(content).toContain("Original Description");
+  });
+
+  it("OpenAIが5件未満を返した場合、第1段階スコア降順で補充して5件にする", async () => {
+    // stage1スコア: 1→10, 2→8, 3→6, 4→4, 5→2
+    const articles = [
+      makeFetchedArticle(1, 10),
+      makeFetchedArticle(2, 8),
+      makeFetchedArticle(3, 6),
+      makeFetchedArticle(4, 4),
+      makeFetchedArticle(5, 2),
+    ];
+    // OpenAIは2件しかスコアを返さない
+    const scores = [
+      { url: "https://example.com/3", score: 9 },
+      { url: "https://example.com/5", score: 7 },
+    ];
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(mockOpenAIResponse(scores)));
+
+    const result = await scoreStage2(articles, "test-api-key");
+
+    expect(result).toHaveLength(5);
+    // 最初の2件はOpenAIがスコアを付けたもの
+    expect(result[0].url).toBe("https://example.com/3");
+    expect(result[1].url).toBe("https://example.com/5");
+    // 残り3件は stage1スコア降順（1→10, 2→8, 4→4）で補充
+    expect(result[2].url).toBe("https://example.com/1");
+    expect(result[3].url).toBe("https://example.com/2");
+    expect(result[4].url).toBe("https://example.com/4");
+  });
+
+  it("補充時に選択済みURLは重複しない", async () => {
+    const articles = Array.from({ length: 3 }, (_, i) => makeFetchedArticle(i + 1, 5 - i));
+    // OpenAIは1件だけ返す
+    const scores = [{ url: "https://example.com/1", score: 9 }];
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(mockOpenAIResponse(scores)));
+
+    const result = await scoreStage2(articles, "test-api-key");
+
+    const urls = result.map((a) => a.url);
+    expect(new Set(urls).size).toBe(urls.length); // 重複なし
+    expect(result.length).toBe(3); // 記事が3件しかないので最大3件
   });
 });

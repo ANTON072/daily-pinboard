@@ -63,10 +63,10 @@
 
 ## フェーズ9：第2段階スコアリング（`src/scorer.ts`） ※TDD
 
-- [ ] 9-1. **[Red]** `scorer.test.ts` に `scoreStage2` のテストを追加（フォールバック補充ロジック含む）
-- [ ] 9-2. **[Green]** `scoreStage2()` 実装（fetchedTitle + fetchedDescription 一括送信・上位5件選出）
-- [ ] 9-3. **[Green]** フォールバック補充ロジック実装（5件未満時に第1段階スコア降順で補充）
-- [ ] 9-4. `pnpm test` でテストが通ることを確認
+- [x] 9-1. **[Red]** `scorer.test.ts` に `scoreStage2` のテストを追加（フォールバック補充ロジック含む）
+- [x] 9-2. **[Green]** `scoreStage2()` 実装（fetchedTitle + fetchedDescription 一括送信・上位5件選出）
+- [x] 9-3. **[Green]** フォールバック補充ロジック実装（5件未満時に第1段階スコア降順で補充）
+- [x] 9-4. `pnpm test` でテストが通ることを確認
 
 ## フェーズ10：日本語要約生成（`src/summarizer.ts`） ※TDD
 
