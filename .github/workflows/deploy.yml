@@ -21,8 +21,34 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run tests
-        run: pnpm test
+      - name: Run tests with coverage
+        run: pnpm test --coverage
+
+      - name: Update coverage badge in README
+        run: |
+          COVERAGE=$(node -e "
+            const s = require('./coverage/coverage-summary.json');
+            const t = s.total;
+            const pct = ((t.statements.covered / t.statements.total) * 100).toFixed(0);
+            const color = pct >= 80 ? 'brightgreen' : pct >= 60 ? 'yellow' : 'red';
+            console.log(pct + '|' + color);
+          ")
+          PCT=$(echo $COVERAGE | cut -d'|' -f1)
+          COLOR=$(echo $COVERAGE | cut -d'|' -f2)
+          BADGE="![Coverage](https://img.shields.io/badge/coverage-${PCT}%25-${COLOR})"
+          if grep -q "img.shields.io/badge/coverage" README.md; then
+            sed -i "s|!\[Coverage\](https://img.shields.io/badge/coverage-[^)]*)|${BADGE}|g" README.md
+          else
+            sed -i "1s|^|${BADGE}\n\n|" README.md
+          fi
+
+      - name: Commit coverage badge
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --staged --quiet || git commit -m "chore: update coverage badge [skip ci]"
+          git push
 
       - name: Deploy to Cloudflare Workers
         run: pnpm run deploy
