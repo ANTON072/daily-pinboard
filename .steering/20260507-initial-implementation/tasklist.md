@@ -41,18 +41,18 @@
 
 ## フェーズ6：第1段階スコアリング（`src/scorer.ts`） ※TDD
 
-- [ ] 6-1. **[Red]** `src/scorer.test.ts` 作成（スコア選出ロジック・OpenAI レスポンスパースのテストを書く）
-- [ ] 6-2. **[Green]** `scoreStage1()` 実装（title / description を一括送信・スコアリング）
-- [ ] 6-3. **[Green]** OpenAI レスポンスのパース・上位20〜30件の選出ロジック実装
-- [ ] 6-4. `pnpm test` でテストが通ることを確認
+- [x] 6-1. **[Red]** `src/scorer.test.ts` 作成（スコア選出ロジック・OpenAI レスポンスパースのテストを書く）
+- [x] 6-2. **[Green]** `scoreStage1()` 実装（title / description を一括送信・スコアリング）
+- [x] 6-3. **[Green]** OpenAI レスポンスのパース・上位20〜30件の選出ロジック実装
+- [x] 6-4. `pnpm test` でテストが通ることを確認
 
 ## フェーズ7：重複排除（`src/deduplicator.ts`） ※TDD
 
-- [ ] 7-1. **[Red]** `src/deduplicator.test.ts` 作成（D1 照合・期限切れ削除・URL記録のテストを書く）
-- [ ] 7-2. **[Green]** `deduplicateArticles()` 実装（D1 照合・除外）
-- [ ] 7-3. **[Green]** `cleanupExpiredRecords()` 実装（90日超過レコード削除）
-- [ ] 7-4. **[Green]** `recordSentArticles()` 実装（送信済みURL記録）
-- [ ] 7-5. `pnpm test` でテストが通ることを確認
+- [x] 7-1. **[Red]** `src/deduplicator.test.ts` 作成（D1 照合・期限切れ削除・URL記録のテストを書く）
+- [x] 7-2. **[Green]** `deduplicateArticles()` 実装（D1 照合・除外）
+- [x] 7-3. **[Green]** `cleanupExpiredRecords()` 実装（90日超過レコード削除）
+- [x] 7-4. **[Green]** `recordSentArticles()` 実装（送信済みURL記録）
+- [x] 7-5. `pnpm test` でテストが通ることを確認
 
 ## フェーズ8：記事フェッチ（`src/articleFetcher.ts`） ※TDD
 
