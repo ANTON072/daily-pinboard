@@ -70,9 +70,9 @@
 
 ## フェーズ10：日本語要約生成（`src/summarizer.ts`） ※TDD
 
-- [ ] 10-1. **[Red]** `src/summarizer.test.ts` 作成（入出力マッピング・OpenAI 呼び出し回数のテストを書く）
-- [ ] 10-2. **[Green]** `summarizeArticles()` 実装（記事ごと個別 OpenAI 呼び出し・日本語要約生成）
-- [ ] 10-3. `pnpm test` でテストが通ることを確認
+- [x] 10-1. **[Red]** `src/summarizer.test.ts` 作成（入出力マッピング・OpenAI 呼び出し回数のテストを書く）
+- [x] 10-2. **[Green]** `summarizeArticles()` 実装（記事ごと個別 OpenAI 呼び出し・日本語要約生成）
+- [x] 10-3. `pnpm test` でテストが通ることを確認
 
 ## フェーズ11：メール送信（`src/mailer.ts`） ※TDD
 
