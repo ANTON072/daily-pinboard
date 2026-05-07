@@ -96,7 +96,7 @@
 ## フェーズ14：デプロイ準備
 
 - [x] 14-1. `.github/workflows/deploy.yml` 作成（CI に `pnpm test` を追加）
-- [ ] 14-2. Cloudflare Workers にシークレット登録（手動）
+- [x] 14-2. Cloudflare Workers にシークレット登録（手動）
 
   ```bash
   pnpm exec wrangler secret put OPENAI_API_KEY
@@ -104,17 +104,17 @@
   pnpm exec wrangler secret put TO_EMAIL
   ```
 
-- [ ] 14-3. リモート D1 にマイグレーション適用（手動）
+- [x] 14-3. リモート D1 にマイグレーション適用（手動）
 
   ```bash
   pnpm run db:migrate:remote
   ```
 
-- [ ] 14-4. GitHub Secrets に登録（手動） — リポジトリ Settings > Secrets and variables > Actions
+- [x] 14-4. GitHub Secrets に登録（手動） — リポジトリ Settings > Secrets and variables > Actions
   - `CLOUDFLARE_API_TOKEN`（Cloudflare Dashboard でトークン発行）
   - `CLOUDFLARE_ACCOUNT_ID`（Cloudflare Dashboard のアカウントID）
 
-- [ ] 14-5. `main` ブランチへ push して GitHub Actions の自動デプロイを確認
+- [x] 14-5. `main` ブランチへ push して GitHub Actions の自動デプロイを確認
 
   ```bash
   git push origin main
