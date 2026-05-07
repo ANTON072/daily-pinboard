@@ -28,9 +28,9 @@
 
 ## フェーズ4：テスト環境セットアップ
 
-- [ ] 4-1. `vitest` を devDependencies に追加
-- [ ] 4-2. `vitest.config.ts` 作成
-- [ ] 4-3. `package.json` の `scripts` に `test` / `test:watch` / `test:coverage` を追加
+- [x] 4-1. `vitest` を devDependencies に追加
+- [x] 4-2. `vitest.config.ts` 作成
+- [x] 4-3. `package.json` の `scripts` に `test` / `test:watch` / `test:coverage` を追加
 
 ## フェーズ5：記事収集（`src/fetcher.ts`） ※TDD
 

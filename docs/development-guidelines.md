@@ -31,15 +31,15 @@
 ### セットアップ
 
 ```bash
-npm install --save-dev --save-exact @biomejs/biome
-npx biome init
+pnpm add -D --save-exact @biomejs/biome
+pnpm biome init
 ```
 
 ### 主要コマンド
 
 ```bash
-npx biome check .                   # lint + format チェック
-npx biome check --write --assist .  # 自動修正（import 整理含む）
+pnpm biome check .                   # lint + format チェック
+pnpm biome check --write --assist .  # 自動修正（import 整理含む）
 ```
 
 ### `biome.json` 基本設定
@@ -71,7 +71,7 @@ npx biome check --write --assist .  # 自動修正（import 整理含む）
 
 ### CI での実行
 
-`npx biome check .` が失敗した場合はデプロイをブロックする。
+`pnpm biome check .` が失敗した場合はデプロイをブロックする。
 
 ---
 
@@ -136,9 +136,9 @@ npx biome check --write --assist .  # 自動修正（import 整理含む）
 ### 主要コマンド
 
 ```bash
-npm test                  # テスト実行（CI 向け）
-npm run test:watch        # ウォッチモード（開発中）
-npm run test:coverage     # カバレッジレポート出力
+pnpm test                  # テスト実行（CI 向け）
+pnpm test:watch            # ウォッチモード（開発中）
+pnpm test:coverage         # カバレッジレポート出力
 ```
 
 ### テスト実行タイミング
@@ -150,8 +150,8 @@ npm run test:coverage     # カバレッジレポート出力
 ### ローカル動作確認
 
 ```bash
-npm run dev               # wrangler dev 起動
-npm run db:migrate:local  # D1 マイグレーション（ローカル）
+pnpm dev                  # wrangler dev 起動
+pnpm db:migrate:local     # D1 マイグレーション（ローカル）
 ```
 
 ---
@@ -159,8 +159,8 @@ npm run db:migrate:local  # D1 マイグレーション（ローカル）
 ## デプロイ
 
 - `main` ブランチへの push で GitHub Actions が自動デプロイする
-- 手動デプロイ：`npm run deploy`
-- デプロイ前に `biome check .` と型チェック（`tsc --noEmit`）を通すこと
+- 手動デプロイ：`pnpm deploy`
+- デプロイ前に `pnpm biome check .` と型チェック（`pnpm typecheck`）を通すこと
 
 ### 必要な GitHub Secrets
 
