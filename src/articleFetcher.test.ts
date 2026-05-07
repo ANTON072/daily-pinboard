@@ -123,7 +123,10 @@ describe("fetchArticles", () => {
 
   it("HTTPエラー時はその記事をスキップする", async () => {
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 404, text: async () => "" }));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: false, status: 404, text: async () => "" }),
+    );
 
     const articles = [makeArticle("https://example.com/1")];
     const result = await fetchArticles(articles);
@@ -136,7 +139,11 @@ describe("fetchArticles", () => {
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockRejectedValue(Object.assign(new Error("The operation was aborted"), { name: "AbortError" })),
+      vi
+        .fn()
+        .mockRejectedValue(
+          Object.assign(new Error("The operation was aborted"), { name: "AbortError" }),
+        ),
     );
 
     const articles = [makeArticle("https://example.com/1")];

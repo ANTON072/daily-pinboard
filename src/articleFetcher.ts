@@ -7,7 +7,10 @@ function extractTagContent(html: string, tag: string): string {
 }
 
 function stripTags(html: string): string {
-  return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function extractTitle(html: string): string {
@@ -16,8 +19,9 @@ function extractTitle(html: string): string {
 }
 
 function extractDescription(html: string): string {
-  const match = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i)
-    ?? html.match(/<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["']/i);
+  const match =
+    html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i) ??
+    html.match(/<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["']/i);
   return match ? match[1] : "";
 }
 

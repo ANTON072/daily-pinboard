@@ -1,9 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  cleanupExpiredRecords,
-  deduplicateArticles,
-  recordSentArticles,
-} from "./deduplicator";
+import { cleanupExpiredRecords, deduplicateArticles, recordSentArticles } from "./deduplicator";
 import type { ScoredArticle } from "./types";
 
 const makeArticle = (url: string): ScoredArticle => ({
@@ -43,8 +39,7 @@ describe("deduplicateArticles", () => {
       raw: vi.fn().mockResolvedValue([]),
       all: vi.fn(),
     };
-    statement.all
-      .mockResolvedValueOnce({ results: [{ url: "https://example.com/sent" }] });
+    statement.all.mockResolvedValueOnce({ results: [{ url: "https://example.com/sent" }] });
 
     const db = {
       prepare: vi.fn().mockReturnValue(statement),
@@ -103,9 +98,7 @@ describe("cleanupExpiredRecords", () => {
 
     await cleanupExpiredRecords(db);
 
-    expect(db.prepare).toHaveBeenCalledWith(
-      expect.stringContaining("DELETE FROM sent_articles"),
-    );
+    expect(db.prepare).toHaveBeenCalledWith(expect.stringContaining("DELETE FROM sent_articles"));
     expect(statement.bind).toHaveBeenCalledWith(expect.any(String));
     expect(statement.run).toHaveBeenCalled();
   });
@@ -134,9 +127,7 @@ describe("recordSentArticles", () => {
 
     await recordSentArticles(urls, db);
 
-    expect(db.prepare).toHaveBeenCalledWith(
-      expect.stringContaining("INSERT INTO sent_articles"),
-    );
+    expect(db.prepare).toHaveBeenCalledWith(expect.stringContaining("INSERT INTO sent_articles"));
     expect(statement.bind).toHaveBeenCalledTimes(2);
   });
 

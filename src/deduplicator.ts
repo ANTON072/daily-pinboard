@@ -25,16 +25,10 @@ export async function cleanupExpiredRecords(db: D1Database): Promise<void> {
   cutoff.setDate(cutoff.getDate() - EXPIRY_DAYS);
   const cutoffStr = cutoff.toISOString();
 
-  await db
-    .prepare("DELETE FROM sent_articles WHERE sent_at < ?")
-    .bind(cutoffStr)
-    .run();
+  await db.prepare("DELETE FROM sent_articles WHERE sent_at < ?").bind(cutoffStr).run();
 }
 
-export async function recordSentArticles(
-  urls: string[],
-  db: D1Database,
-): Promise<void> {
+export async function recordSentArticles(urls: string[], db: D1Database): Promise<void> {
   if (urls.length === 0) return;
 
   const sentAt = new Date().toISOString();

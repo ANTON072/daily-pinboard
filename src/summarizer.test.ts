@@ -48,9 +48,7 @@ describe("summarizeArticles", () => {
 
   it("記事ごとに個別の OpenAI 呼び出しを行う", async () => {
     const articles = [makeFetchedArticle(1), makeFetchedArticle(2), makeFetchedArticle(3)];
-    const mockFetch = vi
-      .fn()
-      .mockResolvedValue(mockOpenAISummaryResponse("日本語要約"));
+    const mockFetch = vi.fn().mockResolvedValue(mockOpenAISummaryResponse("日本語要約"));
     vi.stubGlobal("fetch", mockFetch);
 
     await summarizeArticles(articles, "test-api-key");
