@@ -56,10 +56,10 @@
 
 ## フェーズ8：記事フェッチ（`src/articleFetcher.ts`） ※TDD
 
-- [ ] 8-1. **[Red]** `src/articleFetcher.test.ts` 作成（HTML パース・本文抽出・タイムアウト処理のテストを書く）
-- [ ] 8-2. **[Green]** `fetchArticles()` 実装（タイムアウト5秒、失敗時スキップ）
-- [ ] 8-3. **[Green]** HTML パース実装（`<article>` → `<main>` → `<body>` 優先順位・先頭3,000文字）
-- [ ] 8-4. `pnpm test` でテストが通ることを確認
+- [x] 8-1. **[Red]** `src/articleFetcher.test.ts` 作成（HTML パース・本文抽出・タイムアウト処理のテストを書く）
+- [x] 8-2. **[Green]** `fetchArticles()` 実装（タイムアウト5秒、失敗時スキップ）
+- [x] 8-3. **[Green]** HTML パース実装（`<article>` → `<main>` → `<body>` 優先順位・先頭3,000文字）
+- [x] 8-4. `pnpm test` でテストが通ることを確認
 
 ## フェーズ9：第2段階スコアリング（`src/scorer.ts`） ※TDD
 
@@ -88,7 +88,7 @@
 
 ## フェーズ13：品質チェック
 
-- [ ] 13-1. `npm test` ですべてのテストが通ることを確認
+- [ ] 13-1. `pnpm test` ですべてのテストが通ることを確認
 - [ ] 13-2. Biome lint / format チェック（`pnpm run lint`）
 - [ ] 13-3. TypeScript 型チェック（`pnpm run typecheck`）
 - [ ] 13-4. `wrangler dev` でローカル動作確認
