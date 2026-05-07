@@ -76,10 +76,10 @@
 
 ## フェーズ11：メール送信（`src/mailer.ts`） ※TDD
 
-- [ ] 11-1. **[Red]** `src/mailer.test.ts` 作成（メール本文フォーマット・Resend 呼び出しのテストを書く）
-- [ ] 11-2. **[Green]** `sendMail()` 実装（Resend API でプレーンテキストメール送信）
-- [ ] 11-3. **[Green]** メール本文フォーマット実装
-- [ ] 11-4. `pnpm test` でテストが通ることを確認
+- [x] 11-1. **[Red]** `src/mailer.test.ts` 作成（メール本文フォーマット・Resend 呼び出しのテストを書く）
+- [x] 11-2. **[Green]** `sendMail()` 実装（Resend API でプレーンテキストメール送信）
+- [x] 11-3. **[Green]** メール本文フォーマット実装
+- [x] 11-4. `pnpm test` でテストが通ることを確認
 
 ## フェーズ12：エントリポイント（`src/index.ts`）
 
