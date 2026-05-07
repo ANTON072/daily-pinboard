@@ -24,7 +24,7 @@
 
 ## フェーズ3：型定義
 
-- [ ] 3-1. `src/types.ts` 作成（`Article`, `ScoredArticle`, `FetchedArticle`, `SummarizedArticle`, `Env`）
+- [x] 3-1. `src/types.ts` 作成（`Article`, `ScoredArticle`, `FetchedArticle`, `SummarizedArticle`, `Env`）
 
 ## フェーズ4：テスト環境セットアップ
 
