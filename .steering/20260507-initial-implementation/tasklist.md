@@ -88,10 +88,10 @@
 
 ## フェーズ13：品質チェック
 
-- [ ] 13-1. `pnpm test` ですべてのテストが通ることを確認
-- [ ] 13-2. Biome lint / format チェック（`pnpm run lint`）
-- [ ] 13-3. TypeScript 型チェック（`pnpm run typecheck`）
-- [ ] 13-4. `wrangler dev` でローカル動作確認
+- [x] 13-1. `pnpm test` ですべてのテストが通ることを確認
+- [x] 13-2. Biome lint / format チェック（`pnpm run lint`）
+- [x] 13-3. TypeScript 型チェック（`pnpm run typecheck`）
+- [x] 13-4. `wrangler dev` でローカル動作確認
 
 ## フェーズ14：デプロイ準備
 
