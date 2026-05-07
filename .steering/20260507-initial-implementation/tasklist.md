@@ -20,7 +20,7 @@
 ## フェーズ2：D1 マイグレーション
 
 - [x] 2-1. `migrations/0001_create_sent_articles.sql` 作成
-- [x] 2-2. ローカル D1 にマイグレーション適用（`npm run db:migrate:local`）
+- [x] 2-2. ローカル D1 にマイグレーション適用（`pnpm run db:migrate:local`）
 
 ## フェーズ3：型定義
 
@@ -37,14 +37,14 @@
 - [x] 5-1. **[Red]** `src/fetcher.test.ts` 作成（フィードパース・リトライロジックのテストを書く）
 - [x] 5-2. **[Green]** `fetchFeed()` 実装（Pinboard Popular フィード取得）
 - [x] 5-3. **[Green]** リトライロジック実装（失敗時1回リトライ）
-- [x] 5-4. `npm test` でテストが通ることを確認
+- [x] 5-4. `pnpm test` でテストが通ることを確認
 
 ## フェーズ6：第1段階スコアリング（`src/scorer.ts`） ※TDD
 
 - [ ] 6-1. **[Red]** `src/scorer.test.ts` 作成（スコア選出ロジック・OpenAI レスポンスパースのテストを書く）
 - [ ] 6-2. **[Green]** `scoreStage1()` 実装（title / description を一括送信・スコアリング）
 - [ ] 6-3. **[Green]** OpenAI レスポンスのパース・上位20〜30件の選出ロジック実装
-- [ ] 6-4. `npm test` でテストが通ることを確認
+- [ ] 6-4. `pnpm test` でテストが通ることを確認
 
 ## フェーズ7：重複排除（`src/deduplicator.ts`） ※TDD
 
@@ -52,34 +52,34 @@
 - [ ] 7-2. **[Green]** `deduplicateArticles()` 実装（D1 照合・除外）
 - [ ] 7-3. **[Green]** `cleanupExpiredRecords()` 実装（90日超過レコード削除）
 - [ ] 7-4. **[Green]** `recordSentArticles()` 実装（送信済みURL記録）
-- [ ] 7-5. `npm test` でテストが通ることを確認
+- [ ] 7-5. `pnpm test` でテストが通ることを確認
 
 ## フェーズ8：記事フェッチ（`src/articleFetcher.ts`） ※TDD
 
 - [ ] 8-1. **[Red]** `src/articleFetcher.test.ts` 作成（HTML パース・本文抽出・タイムアウト処理のテストを書く）
 - [ ] 8-2. **[Green]** `fetchArticles()` 実装（タイムアウト5秒、失敗時スキップ）
 - [ ] 8-3. **[Green]** HTML パース実装（`<article>` → `<main>` → `<body>` 優先順位・先頭3,000文字）
-- [ ] 8-4. `npm test` でテストが通ることを確認
+- [ ] 8-4. `pnpm test` でテストが通ることを確認
 
 ## フェーズ9：第2段階スコアリング（`src/scorer.ts`） ※TDD
 
 - [ ] 9-1. **[Red]** `scorer.test.ts` に `scoreStage2` のテストを追加（フォールバック補充ロジック含む）
 - [ ] 9-2. **[Green]** `scoreStage2()` 実装（fetchedTitle + fetchedDescription 一括送信・上位5件選出）
 - [ ] 9-3. **[Green]** フォールバック補充ロジック実装（5件未満時に第1段階スコア降順で補充）
-- [ ] 9-4. `npm test` でテストが通ることを確認
+- [ ] 9-4. `pnpm test` でテストが通ることを確認
 
 ## フェーズ10：日本語要約生成（`src/summarizer.ts`） ※TDD
 
 - [ ] 10-1. **[Red]** `src/summarizer.test.ts` 作成（入出力マッピング・OpenAI 呼び出し回数のテストを書く）
 - [ ] 10-2. **[Green]** `summarizeArticles()` 実装（記事ごと個別 OpenAI 呼び出し・日本語要約生成）
-- [ ] 10-3. `npm test` でテストが通ることを確認
+- [ ] 10-3. `pnpm test` でテストが通ることを確認
 
 ## フェーズ11：メール送信（`src/mailer.ts`） ※TDD
 
 - [ ] 11-1. **[Red]** `src/mailer.test.ts` 作成（メール本文フォーマット・Resend 呼び出しのテストを書く）
 - [ ] 11-2. **[Green]** `sendMail()` 実装（Resend API でプレーンテキストメール送信）
 - [ ] 11-3. **[Green]** メール本文フォーマット実装
-- [ ] 11-4. `npm test` でテストが通ることを確認
+- [ ] 11-4. `pnpm test` でテストが通ることを確認
 
 ## フェーズ12：エントリポイント（`src/index.ts`）
 
@@ -89,14 +89,14 @@
 ## フェーズ13：品質チェック
 
 - [ ] 13-1. `npm test` ですべてのテストが通ることを確認
-- [ ] 13-2. Biome lint / format チェック（`npm run lint`）
-- [ ] 13-3. TypeScript 型チェック（`npm run typecheck`）
+- [ ] 13-2. Biome lint / format チェック（`pnpm run lint`）
+- [ ] 13-3. TypeScript 型チェック（`pnpm run typecheck`）
 - [ ] 13-4. `wrangler dev` でローカル動作確認
 
 ## フェーズ14：デプロイ準備
 
-- [ ] 14-1. `.github/workflows/deploy.yml` 作成（CI に `npm test` を追加）
+- [ ] 14-1. `.github/workflows/deploy.yml` 作成（CI に `pnpm test` を追加）
 - [ ] 14-2. Cloudflare Workers にシークレット登録（`wrangler secret put OPENAI_API_KEY` 等）
-- [ ] 14-3. リモート D1 にマイグレーション適用（`npm run db:migrate:remote`）
+- [ ] 14-3. リモート D1 にマイグレーション適用（`pnpm run db:migrate:remote`）
 - [ ] 14-4. GitHub Secrets に `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` を登録
 - [ ] 14-5. `main` ブランチへ push して GitHub Actions の自動デプロイを確認
