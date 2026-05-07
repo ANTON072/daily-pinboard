@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 migrations apply daily-pinboard --local",
+    "db:migrate:remote": "wrangler d1 migrations apply daily-pinboard --remote",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check ."
   },
   "engines": {
     "node": ">=24.0.0"
@@ -14,9 +19,16 @@
   "license": "ISC",
   "packageManager": "pnpm@10.28.1",
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "sharp", "workerd"]
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "workerd"
+    ]
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.14",
+    "@cloudflare/workers-types": "^4.20260507.1",
+    "typescript": "^6.0.3",
     "wrangler": "^4.88.0"
   }
 }

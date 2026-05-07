@@ -1,0 +1,11 @@
+name = "daily-pinboard"
+main = "src/index.ts"
+compatibility_date = "2025-11-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "daily-pinboard"
+database_id = "c3bbcfe6-a133-44df-8cec-55825d756b28"
+
+[triggers]
+crons = ["0 0 * * *"]

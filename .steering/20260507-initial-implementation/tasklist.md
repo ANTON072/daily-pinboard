@@ -9,13 +9,13 @@
 
 ## フェーズ1：環境セットアップ
 
-- [ ] 1-1. Cloudflare D1 データベース作成（`wrangler d1 create daily-pinboard`）
-- [ ] 1-2. `wrangler.toml` 作成（D1 database_id を設定）
-- [ ] 1-3. `tsconfig.json` 作成
-- [ ] 1-4. devDependencies 追加（`@cloudflare/workers-types`, `@biomejs/biome`, `typescript`）
-- [ ] 1-5. `package.json` の `scripts` 更新（`dev`, `deploy`, `db:migrate:local`, `db:migrate:remote`, `typecheck`, `lint`）
-- [ ] 1-6. `biome.json` 作成
-- [ ] 1-7. `.env.local` に Cloudflare D1 database_id を追記（ローカル開発用変数の確認）
+- [x] 1-1. Cloudflare D1 データベース作成（`wrangler d1 create daily-pinboard`）
+- [x] 1-2. `wrangler.toml` 作成（D1 database_id を設定）
+- [x] 1-3. `tsconfig.json` 作成
+- [x] 1-4. devDependencies 追加（`@cloudflare/workers-types`, `@biomejs/biome`, `typescript`）
+- [x] 1-5. `package.json` の `scripts` 更新（`dev`, `deploy`, `db:migrate:local`, `db:migrate:remote`, `typecheck`, `lint`）
+- [x] 1-6. `biome.json` 作成
+- [x] 1-7. `.env.local` に Cloudflare D1 database_id を追記（ローカル開発用変数の確認）
 
 ## フェーズ2：D1 マイグレーション
 
