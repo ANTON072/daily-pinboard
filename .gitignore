@@ -168,6 +168,9 @@ dist
 # Serverless directories
 .serverless/
 
+# Wrangler local state
+.wrangler/
+
 # FuseBox cache
 .fusebox/
 

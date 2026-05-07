@@ -19,8 +19,8 @@
 
 ## フェーズ2：D1 マイグレーション
 
-- [ ] 2-1. `migrations/0001_create_sent_articles.sql` 作成
-- [ ] 2-2. ローカル D1 にマイグレーション適用（`npm run db:migrate:local`）
+- [x] 2-1. `migrations/0001_create_sent_articles.sql` 作成
+- [x] 2-2. ローカル D1 にマイグレーション適用（`npm run db:migrate:local`）
 
 ## フェーズ3：型定義
 
