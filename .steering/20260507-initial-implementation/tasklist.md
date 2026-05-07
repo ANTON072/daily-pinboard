@@ -34,10 +34,10 @@
 
 ## フェーズ5：記事収集（`src/fetcher.ts`） ※TDD
 
-- [ ] 5-1. **[Red]** `src/fetcher.test.ts` 作成（フィードパース・リトライロジックのテストを書く）
-- [ ] 5-2. **[Green]** `fetchFeed()` 実装（Pinboard Popular フィード取得）
-- [ ] 5-3. **[Green]** リトライロジック実装（失敗時1回リトライ）
-- [ ] 5-4. `npm test` でテストが通ることを確認
+- [x] 5-1. **[Red]** `src/fetcher.test.ts` 作成（フィードパース・リトライロジックのテストを書く）
+- [x] 5-2. **[Green]** `fetchFeed()` 実装（Pinboard Popular フィード取得）
+- [x] 5-3. **[Green]** リトライロジック実装（失敗時1回リトライ）
+- [x] 5-4. `npm test` でテストが通ることを確認
 
 ## フェーズ6：第1段階スコアリング（`src/scorer.ts`） ※TDD
 
