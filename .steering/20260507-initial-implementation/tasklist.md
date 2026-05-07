@@ -26,56 +26,77 @@
 
 - [ ] 3-1. `src/types.ts` 作成（`Article`, `ScoredArticle`, `FetchedArticle`, `SummarizedArticle`, `Env`）
 
-## フェーズ4：記事収集（`src/fetcher.ts`）
+## フェーズ4：テスト環境セットアップ
 
-- [ ] 4-1. `fetchFeed()` 実装（Pinboard Popular フィード取得）
-- [ ] 4-2. リトライロジック実装（失敗時1回リトライ）
+- [ ] 4-1. `vitest` を devDependencies に追加
+- [ ] 4-2. `vitest.config.ts` 作成
+- [ ] 4-3. `package.json` の `scripts` に `test` / `test:watch` / `test:coverage` を追加
 
-## フェーズ5：第1段階スコアリング（`src/scorer.ts`）
+## フェーズ5：記事収集（`src/fetcher.ts`） ※TDD
 
-- [ ] 5-1. `scoreStage1()` 実装（title / description を一括送信・スコアリング）
-- [ ] 5-2. OpenAI レスポンスのパース・上位20〜30件の選出ロジック実装
+- [ ] 5-1. **[Red]** `src/fetcher.test.ts` 作成（フィードパース・リトライロジックのテストを書く）
+- [ ] 5-2. **[Green]** `fetchFeed()` 実装（Pinboard Popular フィード取得）
+- [ ] 5-3. **[Green]** リトライロジック実装（失敗時1回リトライ）
+- [ ] 5-4. `npm test` でテストが通ることを確認
 
-## フェーズ6：重複排除（`src/deduplicator.ts`）
+## フェーズ6：第1段階スコアリング（`src/scorer.ts`） ※TDD
 
-- [ ] 6-1. `deduplicateArticles()` 実装（D1 照合・除外）
-- [ ] 6-2. `cleanupExpiredRecords()` 実装（90日超過レコード削除）
-- [ ] 6-3. `recordSentArticles()` 実装（送信済みURL記録）
+- [ ] 6-1. **[Red]** `src/scorer.test.ts` 作成（スコア選出ロジック・OpenAI レスポンスパースのテストを書く）
+- [ ] 6-2. **[Green]** `scoreStage1()` 実装（title / description を一括送信・スコアリング）
+- [ ] 6-3. **[Green]** OpenAI レスポンスのパース・上位20〜30件の選出ロジック実装
+- [ ] 6-4. `npm test` でテストが通ることを確認
 
-## フェーズ7：記事フェッチ（`src/articleFetcher.ts`）
+## フェーズ7：重複排除（`src/deduplicator.ts`） ※TDD
 
-- [ ] 7-1. `fetchArticles()` 実装（タイムアウト5秒、失敗時スキップ）
-- [ ] 7-2. HTML パース実装（`<article>` → `<main>` → `<body>` 優先順位・先頭3,000文字）
+- [ ] 7-1. **[Red]** `src/deduplicator.test.ts` 作成（D1 照合・期限切れ削除・URL記録のテストを書く）
+- [ ] 7-2. **[Green]** `deduplicateArticles()` 実装（D1 照合・除外）
+- [ ] 7-3. **[Green]** `cleanupExpiredRecords()` 実装（90日超過レコード削除）
+- [ ] 7-4. **[Green]** `recordSentArticles()` 実装（送信済みURL記録）
+- [ ] 7-5. `npm test` でテストが通ることを確認
 
-## フェーズ8：第2段階スコアリング（`src/scorer.ts`）
+## フェーズ8：記事フェッチ（`src/articleFetcher.ts`） ※TDD
 
-- [ ] 8-1. `scoreStage2()` 実装（fetchedTitle + fetchedDescription 一括送信・上位5件選出）
-- [ ] 8-2. フォールバック補充ロジック実装（5件未満時に第1段階スコア降順で補充）
+- [ ] 8-1. **[Red]** `src/articleFetcher.test.ts` 作成（HTML パース・本文抽出・タイムアウト処理のテストを書く）
+- [ ] 8-2. **[Green]** `fetchArticles()` 実装（タイムアウト5秒、失敗時スキップ）
+- [ ] 8-3. **[Green]** HTML パース実装（`<article>` → `<main>` → `<body>` 優先順位・先頭3,000文字）
+- [ ] 8-4. `npm test` でテストが通ることを確認
 
-## フェーズ9：日本語要約生成（`src/summarizer.ts`）
+## フェーズ9：第2段階スコアリング（`src/scorer.ts`） ※TDD
 
-- [ ] 9-1. `summarizeArticles()` 実装（記事ごと個別 OpenAI 呼び出し・日本語要約生成）
+- [ ] 9-1. **[Red]** `scorer.test.ts` に `scoreStage2` のテストを追加（フォールバック補充ロジック含む）
+- [ ] 9-2. **[Green]** `scoreStage2()` 実装（fetchedTitle + fetchedDescription 一括送信・上位5件選出）
+- [ ] 9-3. **[Green]** フォールバック補充ロジック実装（5件未満時に第1段階スコア降順で補充）
+- [ ] 9-4. `npm test` でテストが通ることを確認
 
-## フェーズ10：メール送信（`src/mailer.ts`）
+## フェーズ10：日本語要約生成（`src/summarizer.ts`） ※TDD
 
-- [ ] 10-1. `sendMail()` 実装（Resend API でプレーンテキストメール送信）
-- [ ] 10-2. メール本文フォーマット実装
+- [ ] 10-1. **[Red]** `src/summarizer.test.ts` 作成（入出力マッピング・OpenAI 呼び出し回数のテストを書く）
+- [ ] 10-2. **[Green]** `summarizeArticles()` 実装（記事ごと個別 OpenAI 呼び出し・日本語要約生成）
+- [ ] 10-3. `npm test` でテストが通ることを確認
 
-## フェーズ11：エントリポイント（`src/index.ts`）
+## フェーズ11：メール送信（`src/mailer.ts`） ※TDD
 
-- [ ] 11-1. `scheduled` ハンドラ実装（各フェーズを順次呼び出し）
-- [ ] 11-2. エラーハンドリング・ログ出力の整備
+- [ ] 11-1. **[Red]** `src/mailer.test.ts` 作成（メール本文フォーマット・Resend 呼び出しのテストを書く）
+- [ ] 11-2. **[Green]** `sendMail()` 実装（Resend API でプレーンテキストメール送信）
+- [ ] 11-3. **[Green]** メール本文フォーマット実装
+- [ ] 11-4. `npm test` でテストが通ることを確認
 
-## フェーズ12：品質チェック
+## フェーズ12：エントリポイント（`src/index.ts`）
 
-- [ ] 12-1. Biome lint / format チェック（`npm run lint`）
-- [ ] 12-2. TypeScript 型チェック（`npm run typecheck`）
-- [ ] 12-3. `wrangler dev` でローカル動作確認
+- [ ] 12-1. `scheduled` ハンドラ実装（各フェーズを順次呼び出し）
+- [ ] 12-2. エラーハンドリング・ログ出力の整備
 
-## フェーズ13：デプロイ準備
+## フェーズ13：品質チェック
 
-- [ ] 13-1. `.github/workflows/deploy.yml` 作成
-- [ ] 13-2. Cloudflare Workers にシークレット登録（`wrangler secret put OPENAI_API_KEY` 等）
-- [ ] 13-3. リモート D1 にマイグレーション適用（`npm run db:migrate:remote`）
-- [ ] 13-4. GitHub Secrets に `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` を登録
-- [ ] 13-5. `main` ブランチへ push して GitHub Actions の自動デプロイを確認
+- [ ] 13-1. `npm test` ですべてのテストが通ることを確認
+- [ ] 13-2. Biome lint / format チェック（`npm run lint`）
+- [ ] 13-3. TypeScript 型チェック（`npm run typecheck`）
+- [ ] 13-4. `wrangler dev` でローカル動作確認
+
+## フェーズ14：デプロイ準備
+
+- [ ] 14-1. `.github/workflows/deploy.yml` 作成（CI に `npm test` を追加）
+- [ ] 14-2. Cloudflare Workers にシークレット登録（`wrangler secret put OPENAI_API_KEY` 等）
+- [ ] 14-3. リモート D1 にマイグレーション適用（`npm run db:migrate:remote`）
+- [ ] 14-4. GitHub Secrets に `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` を登録
+- [ ] 14-5. `main` ブランチへ push して GitHub Actions の自動デプロイを確認

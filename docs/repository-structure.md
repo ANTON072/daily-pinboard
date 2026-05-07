@@ -2,7 +2,7 @@
 
 ## ディレクトリ構成
 
-```
+```text
 daily-pinboard/
 ├── src/              # TypeScript ソースコード
 ├── migrations/       # D1 スキーママイグレーション
@@ -24,7 +24,7 @@ daily-pinboard/
 ## ディレクトリの役割
 
 | ディレクトリ | 役割 |
-|------------|------|
+| --- | --- |
 | `src/` | アプリケーションの TypeScript ソースコード一式 |
 | `migrations/` | D1 スキーママイグレーション SQL ファイル（連番管理） |
 | `.github/workflows/` | `main` push 時の自動デプロイワークフロー |
@@ -44,6 +44,12 @@ daily-pinboard/
 - 複数ファイル間で共有する型定義は `src/types.ts` にまとめる
 - 処理フェーズが増えた場合は上記の命名方針に従い新ファイルを追加する
 
+### テストファイル（`src/*.test.ts`）
+
+- テストファイルはソースファイルと同じ `src/` 内にコロケーション（同居）させる
+- ファイル名：`[対象ファイル名].test.ts`（例：`fetcher.test.ts`）
+- テストは実装ファイルよりも **先に** 作成する（TDD）
+
 ### マイグレーション（`migrations/`）
 
 - ファイル名は `[連番]_[説明].sql` の形式とする（例：`0001_create_sent_articles.sql`）
@@ -58,7 +64,7 @@ daily-pinboard/
 
 ### `.gitignore` の対象
 
-```
+```text
 node_modules/
 dist/
 .wrangler/
@@ -113,6 +119,9 @@ crons = ["0 0 * * *"]  # UTC 00:00 = JST 09:00
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "db:migrate:local": "wrangler d1 migrations apply daily-pinboard --local",
     "db:migrate:remote": "wrangler d1 migrations apply daily-pinboard --remote"
   }

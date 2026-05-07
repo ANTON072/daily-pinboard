@@ -104,16 +104,53 @@ npx biome check --write --assist .  # 自動修正（import 整理含む）
 
 ## テスト規約
 
-### 方針
+### 方針：テスト駆動開発（TDD）
 
-- `wrangler dev` を使ったローカル統合テストを優先する
-- 単体テストは複雑なロジック（スコアリング選出、フォールバック補充）に限定して導入する
-- 単体テストフレームワークは **Vitest** を使用する
+本プロジェクトはテスト駆動開発を採用する。実装前にテストを書き、Red → Green → Refactor のサイクルを繰り返す。
+
+1. **Red：** 失敗するテストを書く（実装なし・仕様の明文化）
+2. **Green：** テストが通る最小限の実装を書く
+3. **Refactor：** テストを通したまま実装を整理する
+
+### テストフレームワーク
+
+- **Vitest** を使用する
+- テストファイルはソースファイルと同じディレクトリに配置する（コロケーション）
+- ファイル名：`[対象ファイル名].test.ts`（例：`fetcher.test.ts`）
+
+### テスト対象の原則
+
+すべてのビジネスロジック関数にテストを書く。
+
+| ファイル | テスト対象関数 |
+| --- | --- |
+| `fetcher.ts` | `fetchFeed` のパース・リトライロジック |
+| `scorer.ts` | `scoreStage1`・`scoreStage2` のスコア選出ロジック |
+| `deduplicator.ts` | `deduplicateArticles`・`cleanupExpiredRecords`・`recordSentArticles` |
+| `articleFetcher.ts` | HTML パース・本文抽出ロジック |
+| `summarizer.ts` | `summarizeArticles` の入出力マッピング |
+| `mailer.ts` | メール本文フォーマット生成ロジック |
+
+外部サービス（OpenAI・Resend・Pinboard・D1）はモックまたはスタブで差し替える。
+
+### 主要コマンド
+
+```bash
+npm test                  # テスト実行（CI 向け）
+npm run test:watch        # ウォッチモード（開発中）
+npm run test:coverage     # カバレッジレポート出力
+```
+
+### テスト実行タイミング
+
+- 実装前：テストを書いて失敗することを確認（Red）
+- 実装後：すべてのテストが通ることを確認（Green）
+- CI：`main` へのプッシュ時に自動実行し、失敗時はデプロイをブロック
 
 ### ローカル動作確認
 
 ```bash
-npm run dev        # wrangler dev 起動
+npm run dev               # wrangler dev 起動
 npm run db:migrate:local  # D1 マイグレーション（ローカル）
 ```
 

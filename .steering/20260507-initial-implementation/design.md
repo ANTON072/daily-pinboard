@@ -4,18 +4,32 @@
 
 単一の Cloudflare Worker として実装する。処理フェーズごとにファイルを分割し、`src/index.ts` がエントリポイントとして各フェーズを順次呼び出す。
 
+## 実装方針：テスト駆動開発（TDD）
+
+各フェーズの実装は以下の順序で進める。
+
+1. **テストを書く（Red）** — 実装ファイルは存在しない状態でテストを先に書き、失敗することを確認する
+2. **実装する（Green）** — テストが通る最小限の実装を書く
+3. **整理する（Refactor）** — テストを通したままコードを整理する
+
 ## ファイル構成
 
-```
+```text
 src/
-├── index.ts          # Worker エントリポイント・処理フロー制御
-├── types.ts          # 共有型定義
-├── fetcher.ts        # 記事収集（Pinboard フィード取得）
-├── scorer.ts         # 第1・第2段階スコアリング
-├── deduplicator.ts   # 重複排除・D1 操作
-├── articleFetcher.ts # 記事URL フェッチ（メタ情報・本文取得）
-├── summarizer.ts     # 日本語要約生成
-└── mailer.ts         # メール送信（Resend）
+├── index.ts              # Worker エントリポイント・処理フロー制御
+├── types.ts              # 共有型定義
+├── fetcher.ts            # 記事収集（Pinboard フィード取得）
+├── fetcher.test.ts       # fetcher の単体テスト
+├── scorer.ts             # 第1・第2段階スコアリング
+├── scorer.test.ts        # scorer の単体テスト
+├── deduplicator.ts       # 重複排除・D1 操作
+├── deduplicator.test.ts  # deduplicator の単体テスト
+├── articleFetcher.ts     # 記事URL フェッチ（メタ情報・本文取得）
+├── articleFetcher.test.ts
+├── summarizer.ts         # 日本語要約生成
+├── summarizer.test.ts
+├── mailer.ts             # メール送信（Resend）
+└── mailer.test.ts
 
 migrations/
 └── 0001_create_sent_articles.sql
@@ -27,6 +41,7 @@ migrations/
 wrangler.toml
 tsconfig.json
 biome.json
+vitest.config.ts
 ```
 
 ## 型定義（`src/types.ts`）
