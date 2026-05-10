@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fetchFeed } from "./fetcher";
 
 const mockFeedData = [
@@ -9,7 +9,12 @@ const mockFeedData = [
 
 describe("fetchFeed", () => {
   beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
     vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it("フィードを取得してArticle配列に変換する", async () => {
@@ -21,7 +26,7 @@ describe("fetchFeed", () => {
       }),
     );
 
-    const articles = await fetchFeed();
+    const [articles] = await Promise.all([fetchFeed(), vi.runAllTimersAsync()]);
 
     expect(articles).toHaveLength(3);
     expect(articles[0]).toEqual({
@@ -38,47 +43,70 @@ describe("fetchFeed", () => {
     });
   });
 
-  it("fetch失敗時に1回リトライして成功する", async () => {
+  it("503エラー後に待機してリトライし成功する", async () => {
     const mockFetch = vi
       .fn()
-      .mockRejectedValueOnce(new Error("Network error"))
+      .mockResolvedValueOnce({ ok: false, status: 503 })
       .mockResolvedValueOnce({
         ok: true,
         json: async () => [mockFeedData[0]],
       });
     vi.stubGlobal("fetch", mockFetch);
 
-    const articles = await fetchFeed();
+    const [articles] = await Promise.all([fetchFeed(), vi.runAllTimersAsync()]);
 
     expect(mockFetch).toHaveBeenCalledTimes(2);
     expect(articles).toHaveLength(1);
   });
 
-  it("HTTPエラー時に1回リトライして成功する", async () => {
+  it("JSONパースエラー後に待機してリトライし成功する", async () => {
     const mockFetch = vi
       .fn()
-      .mockResolvedValueOnce({ ok: false, status: 500 })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => {
+          throw new Error("Invalid JSON");
+        },
+      })
       .mockResolvedValueOnce({
         ok: true,
         json: async () => [mockFeedData[0]],
       });
     vi.stubGlobal("fetch", mockFetch);
 
-    const articles = await fetchFeed();
+    const [articles] = await Promise.all([fetchFeed(), vi.runAllTimersAsync()]);
 
     expect(mockFetch).toHaveBeenCalledTimes(2);
     expect(articles).toHaveLength(1);
   });
 
-  it("リトライも失敗した場合はエラーをスローする", async () => {
+  it("配列以外のレスポンスはエラーをスローする", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ error: "something went wrong" }),
+      }),
+    );
+
+    await expect(Promise.all([fetchFeed(), vi.runAllTimersAsync()])).rejects.toThrow(
+      "Unexpected response format",
+    );
+  });
+
+  it("全リトライ失敗後はエラーをスローする", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Network error")));
 
-    await expect(fetchFeed()).rejects.toThrow();
+    await expect(Promise.all([fetchFeed(), vi.runAllTimersAsync()])).rejects.toThrow(
+      "Network error",
+    );
   });
 
-  it("リトライ後もHTTPエラーの場合はエラーをスローする", async () => {
+  it("全リトライ後もHTTPエラーの場合はエラーをスローする", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 503 }));
 
-    await expect(fetchFeed()).rejects.toThrow();
+    await expect(Promise.all([fetchFeed(), vi.runAllTimersAsync()])).rejects.toThrow(
+      "HTTP error: 503",
+    );
   });
 });

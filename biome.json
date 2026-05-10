@@ -20,6 +20,6 @@
     "lineWidth": 100
   },
   "files": {
-    "includes": ["**", "!.claude/", "!.vscode/", "!.wrangler/"]
+    "includes": ["**", "!.claude/", "!.vscode/", "!.wrangler/", "!coverage"]
   }
 }
