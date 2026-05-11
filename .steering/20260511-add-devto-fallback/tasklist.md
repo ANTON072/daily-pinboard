@@ -4,50 +4,50 @@
 
 ### 1. 型定義の追加 (`src/types.ts`)
 
-- [ ] `FeedSource` 型を追加（`"pinboard" | "devto"`）
-- [ ] `DevToArticle` インターフェースを追加（`url`, `title`, `description`, `tag_list` フィールド）
+- [x] `FeedSource` 型を追加（`"pinboard" | "devto"`）
+- [x] `DevToArticle` インターフェースを追加（`url`, `title`, `description`, `tag_list` フィールド）
 
 ### 2. フェッチャーの変更 (`src/fetcher.ts`)
 
-- [ ] `fetchFeed()` の戻り値を `{ articles: Article[], source: FeedSource }` に変更
-- [ ] `DEVTO_API_URL` 定数を追加（`https://dev.to/api/articles?top=7&per_page=50`）
-- [ ] `fetchDevToFeed()` 内部関数を追加
-  - [ ] `RETRY_DELAYS_MS` を使った同一リトライロジックを実装
-  - [ ] `DevToArticle` → `Article` マッピング実装（`tag_list` → `tags`、`description: null` → `""`）
-  - [ ] 全リトライ失敗時はエラーをスロー
-- [ ] 既存のリトライループ全失敗時のフォールバック処理を追加
-  - [ ] `console.log("Falling back to dev.to")` を出力
-  - [ ] `fetchDevToFeed()` を呼び出し `source: "devto"` で返す
-- [ ] Pinboard 成功時は `source: "pinboard"` で返す
+- [x] `fetchFeed()` の戻り値を `{ articles: Article[], source: FeedSource }` に変更
+- [x] `DEVTO_API_URL` 定数を追加（`https://dev.to/api/articles?top=7&per_page=50`）
+- [x] `fetchDevToFeed()` 内部関数を追加
+  - [x] `RETRY_DELAYS_MS` を使った同一リトライロジックを実装
+  - [x] `DevToArticle` → `Article` マッピング実装（`tag_list` → `tags`、`description: null` → `""`）
+  - [x] 全リトライ失敗時はエラーをスロー
+- [x] 既存のリトライループ全失敗時のフォールバック処理を追加
+  - [x] `console.log("Falling back to dev.to")` を出力
+  - [x] `fetchDevToFeed()` を呼び出し `source: "devto"` で返す
+- [x] Pinboard 成功時は `source: "pinboard"` で返す
 
 ### 3. エントリポイントの変更 (`src/index.ts`)
 
-- [ ] `fetchFeed()` の戻り値を分割代入に変更（`const { articles: raw, source } = await fetchFeed()`）
-- [ ] `sendMail()` の第3引数に `source` を渡す
+- [x] `fetchFeed()` の戻り値を分割代入に変更（`const { articles: raw, source } = await fetchFeed()`）
+- [x] `sendMail()` の第3引数に `source` を渡す
 
 ### 4. メーラーの変更 (`src/mailer.ts`)
 
-- [ ] `sendMail()` のシグネチャに `source: FeedSource` を第3引数として追加
-- [ ] `buildMailBody()` に `source` 引数を追加
-- [ ] メール本文末尾にソース行を追加（`Source: Pinboard` または `Source: dev.to`）
+- [x] `sendMail()` のシグネチャに `source: FeedSource` を第3引数として追加
+- [x] `buildMailBody()` に `source` 引数を追加
+- [x] メール本文末尾にソース行を追加（`Source: Pinboard` または `Source: dev.to`）
 
 ### 5. テストの更新・追加 (`src/fetcher.test.ts`)
 
-- [ ] 既存テストの `fetchFeed()` 呼び出しを分割代入に更新（`const { articles } = await fetchFeed()`）
-- [ ] 既存の成功テストに `source === "pinboard"` のアサーションを追加
-- [ ] テスト追加: 全リトライ失敗 → dev.to フォールバック成功
-  - [ ] Pinboard fetch を常に失敗させる
-  - [ ] dev.to fetch を成功させる
-  - [ ] `source === "devto"` を確認
-  - [ ] ログに "Falling back to dev.to" が含まれることを確認（`vi.spyOn(console, "log")`）
-- [ ] テスト追加: dev.to レスポンスの `Article` 型マッピング検証
-  - [ ] `tag_list` → `tags` の変換を検証
-  - [ ] `description: null` → `""` の変換を検証
+- [x] 既存テストの `fetchFeed()` 呼び出しを分割代入に更新（`const { articles } = await fetchFeed()`）
+- [x] 既存の成功テストに `source === "pinboard"` のアサーションを追加
+- [x] テスト追加: 全リトライ失敗 → dev.to フォールバック成功
+  - [x] Pinboard fetch を常に失敗させる
+  - [x] dev.to fetch を成功させる
+  - [x] `source === "devto"` を確認
+  - [x] ログに "Falling back to dev.to" が含まれることを確認（`vi.spyOn(console, "log")`）
+- [x] テスト追加: dev.to レスポンスの `Article` 型マッピング検証
+  - [x] `tag_list` → `tags` の変換を検証
+  - [x] `description: null` → `""` の変換を検証
 
 ### 6. 品質チェック
 
-- [ ] lint・型チェックを実行して問題がないことを確認
-- [ ] 全テストが通ることを確認
+- [x] lint・型チェックを実行して問題がないことを確認
+- [x] 全テストが通ることを確認
 
 ## 完了条件
 
