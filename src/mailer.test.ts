@@ -129,6 +129,24 @@ describe("sendMail", () => {
     expect(body.text).toContain("Article 1");
   });
 
+  it("source が pinboard の場合、本文に 'Source: Pinboard' を含む", async () => {
+    await sendMail(mockArticles, mockEnv, "pinboard");
+
+    const call = vi.mocked(fetch).mock.calls[0];
+    const body = JSON.parse(call[1]?.body as string);
+
+    expect(body.text).toContain("Source: Pinboard");
+  });
+
+  it("source が devto の場合、本文に 'Source: dev.to' を含む", async () => {
+    await sendMail(mockArticles, mockEnv, "devto");
+
+    const call = vi.mocked(fetch).mock.calls[0];
+    const body = JSON.parse(call[1]?.body as string);
+
+    expect(body.text).toContain("Source: dev.to");
+  });
+
   it("Resend API がエラーを返した場合に例外をスローする", async () => {
     vi.stubGlobal(
       "fetch",

@@ -26,9 +26,10 @@ async function fetchDevToFeed(): Promise<Article[]> {
         url: item.url,
         title: item.title,
         description: item.description ?? "",
-        tags: item.tag_list,
+        tags: item.tag_list ?? [],
       }));
     } catch (err) {
+      console.warn(`dev.to fetch failed (attempt ${attempt + 1}):`, err);
       lastError = err;
     }
   }
@@ -37,6 +38,8 @@ async function fetchDevToFeed(): Promise<Article[]> {
 }
 
 export async function fetchFeed(): Promise<{ articles: Article[]; source: FeedSource }> {
+  let lastError: unknown;
+
   for (let attempt = 0; attempt <= RETRY_DELAYS_MS.length; attempt++) {
     if (attempt > 0) {
       await sleep(RETRY_DELAYS_MS[attempt - 1]);
@@ -57,12 +60,13 @@ export async function fetchFeed(): Promise<{ articles: Article[]; source: FeedSo
         tags: item.t,
       }));
       return { articles, source: "pinboard" };
-    } catch {
-      // fall through to next attempt or devto fallback
+    } catch (err) {
+      console.warn(`Pinboard fetch failed (attempt ${attempt + 1}):`, err);
+      lastError = err;
     }
   }
 
-  console.log("Falling back to dev.to");
+  console.warn("Pinboard all retries failed, falling back to dev.to:", lastError);
   const articles = await fetchDevToFeed();
   return { articles, source: "devto" };
 }

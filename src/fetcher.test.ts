@@ -91,7 +91,7 @@ describe("fetchFeed", () => {
     expect(articles).toHaveLength(1);
   });
 
-  it("配列以外のレスポンスはエラーをスローする", async () => {
+  it("Pinboard・dev.toともに配列以外を返した場合はエラーをスローする", async () => {
     vi.stubGlobal(
       "fetch",
       vi
@@ -109,7 +109,7 @@ describe("fetchFeed", () => {
   });
 
   it("全リトライ失敗後はdev.toにフォールバックする", async () => {
-    const consoleSpy = vi.spyOn(console, "log");
+    const consoleSpy = vi.spyOn(console, "warn");
     const mockFetch = vi
       .fn()
       // Pinboard 3 attempts all fail
@@ -127,7 +127,10 @@ describe("fetchFeed", () => {
 
     expect(source).toBe("devto");
     expect(articles).toHaveLength(2);
-    expect(consoleSpy).toHaveBeenCalledWith("Falling back to dev.to");
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Pinboard all retries failed"),
+      expect.anything(),
+    );
   });
 
   it("全リトライ後もHTTPエラーの場合はdev.toにフォールバックする", async () => {
