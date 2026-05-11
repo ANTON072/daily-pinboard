@@ -1,4 +1,4 @@
-![Coverage](https://img.shields.io/badge/coverage-87%25-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-88%25-brightgreen)
 
 # Daily Pinboard
 
