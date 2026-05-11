@@ -10,7 +10,7 @@ export default {
   async scheduled(_event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
     console.log("Daily Pinboard: start");
 
-    const raw = await fetchFeed();
+    const { articles: raw, source } = await fetchFeed();
     console.log(`Fetched ${raw.length} articles from feed`);
 
     const stage1 = await scoreStage1(raw, env.OPENAI_API_KEY);
@@ -30,7 +30,7 @@ export default {
     const summarized = await summarizeArticles(stage2, env.OPENAI_API_KEY);
     console.log(`Summarized: ${summarized.length} articles`);
 
-    await sendMail(summarized, env);
+    await sendMail(summarized, env, source);
     console.log("Mail sent");
 
     await recordSentArticles(

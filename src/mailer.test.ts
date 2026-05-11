@@ -50,12 +50,12 @@ describe("sendMail", () => {
   });
 
   it("Resend API を1回呼び出す", async () => {
-    await sendMail(mockArticles, mockEnv);
+    await sendMail(mockArticles, mockEnv, "pinboard");
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 
   it("正しいエンドポイントとヘッダーで呼び出す", async () => {
-    await sendMail(mockArticles, mockEnv);
+    await sendMail(mockArticles, mockEnv, "pinboard");
 
     expect(fetch).toHaveBeenCalledWith(
       "https://api.resend.com/emails",
@@ -70,7 +70,7 @@ describe("sendMail", () => {
   });
 
   it("件名に今日の日付を含む", async () => {
-    await sendMail(mockArticles, mockEnv);
+    await sendMail(mockArticles, mockEnv, "pinboard");
 
     const call = vi.mocked(fetch).mock.calls[0];
     const body = JSON.parse(call[1]?.body as string);
@@ -79,7 +79,7 @@ describe("sendMail", () => {
   });
 
   it("宛先メールアドレスを正しく設定する", async () => {
-    await sendMail(mockArticles, mockEnv);
+    await sendMail(mockArticles, mockEnv, "pinboard");
 
     const call = vi.mocked(fetch).mock.calls[0];
     const body = JSON.parse(call[1]?.body as string);
@@ -88,7 +88,7 @@ describe("sendMail", () => {
   });
 
   it("本文にすべての記事URLを含む", async () => {
-    await sendMail(mockArticles, mockEnv);
+    await sendMail(mockArticles, mockEnv, "pinboard");
 
     const call = vi.mocked(fetch).mock.calls[0];
     const body = JSON.parse(call[1]?.body as string);
@@ -98,7 +98,7 @@ describe("sendMail", () => {
   });
 
   it("本文にすべての記事タイトルを含む", async () => {
-    await sendMail(mockArticles, mockEnv);
+    await sendMail(mockArticles, mockEnv, "pinboard");
 
     const call = vi.mocked(fetch).mock.calls[0];
     const body = JSON.parse(call[1]?.body as string);
@@ -108,7 +108,7 @@ describe("sendMail", () => {
   });
 
   it("本文にすべての要約を含む", async () => {
-    await sendMail(mockArticles, mockEnv);
+    await sendMail(mockArticles, mockEnv, "pinboard");
 
     const call = vi.mocked(fetch).mock.calls[0];
     const body = JSON.parse(call[1]?.body as string);
@@ -121,12 +121,30 @@ describe("sendMail", () => {
     const articlesWithEmptyFetchedTitle: SummarizedArticle[] = [
       { ...mockArticles[0], fetchedTitle: "" },
     ];
-    await sendMail(articlesWithEmptyFetchedTitle, mockEnv);
+    await sendMail(articlesWithEmptyFetchedTitle, mockEnv, "pinboard");
 
     const call = vi.mocked(fetch).mock.calls[0];
     const body = JSON.parse(call[1]?.body as string);
 
     expect(body.text).toContain("Article 1");
+  });
+
+  it("source が pinboard の場合、本文に 'Source: Pinboard' を含む", async () => {
+    await sendMail(mockArticles, mockEnv, "pinboard");
+
+    const call = vi.mocked(fetch).mock.calls[0];
+    const body = JSON.parse(call[1]?.body as string);
+
+    expect(body.text).toContain("Source: Pinboard");
+  });
+
+  it("source が devto の場合、本文に 'Source: dev.to' を含む", async () => {
+    await sendMail(mockArticles, mockEnv, "devto");
+
+    const call = vi.mocked(fetch).mock.calls[0];
+    const body = JSON.parse(call[1]?.body as string);
+
+    expect(body.text).toContain("Source: dev.to");
   });
 
   it("Resend API がエラーを返した場合に例外をスローする", async () => {
@@ -138,6 +156,8 @@ describe("sendMail", () => {
       }),
     );
 
-    await expect(sendMail(mockArticles, mockEnv)).rejects.toThrow("Resend API error: 422");
+    await expect(sendMail(mockArticles, mockEnv, "pinboard")).rejects.toThrow(
+      "Resend API error: 422",
+    );
   });
 });

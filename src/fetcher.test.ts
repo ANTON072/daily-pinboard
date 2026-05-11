@@ -7,6 +7,16 @@ const mockFeedData = [
   { u: "https://example.com/3", d: "", n: "", t: [] },
 ];
 
+const mockDevToData = [
+  {
+    url: "https://dev.to/1",
+    title: "DevTo Article 1",
+    description: "Dev desc 1",
+    tag_list: ["js", "ts"],
+  },
+  { url: "https://dev.to/2", title: "DevTo Article 2", description: null, tag_list: ["css"] },
+];
+
 describe("fetchFeed", () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -26,8 +36,9 @@ describe("fetchFeed", () => {
       }),
     );
 
-    const [articles] = await Promise.all([fetchFeed(), vi.runAllTimersAsync()]);
+    const [{ articles, source }] = await Promise.all([fetchFeed(), vi.runAllTimersAsync()]);
 
+    expect(source).toBe("pinboard");
     expect(articles).toHaveLength(3);
     expect(articles[0]).toEqual({
       url: "https://example.com/1",
@@ -53,7 +64,7 @@ describe("fetchFeed", () => {
       });
     vi.stubGlobal("fetch", mockFetch);
 
-    const [articles] = await Promise.all([fetchFeed(), vi.runAllTimersAsync()]);
+    const [{ articles }] = await Promise.all([fetchFeed(), vi.runAllTimersAsync()]);
 
     expect(mockFetch).toHaveBeenCalledTimes(2);
     expect(articles).toHaveLength(1);
@@ -74,19 +85,22 @@ describe("fetchFeed", () => {
       });
     vi.stubGlobal("fetch", mockFetch);
 
-    const [articles] = await Promise.all([fetchFeed(), vi.runAllTimersAsync()]);
+    const [{ articles }] = await Promise.all([fetchFeed(), vi.runAllTimersAsync()]);
 
     expect(mockFetch).toHaveBeenCalledTimes(2);
     expect(articles).toHaveLength(1);
   });
 
-  it("配列以外のレスポンスはエラーをスローする", async () => {
+  it("Pinboard・dev.toともに配列以外を返した場合はエラーをスローする", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => ({ error: "something went wrong" }),
-      }),
+      vi
+        .fn()
+        .mockResolvedValueOnce({ ok: true, json: async () => ({ error: "something went wrong" }) })
+        .mockResolvedValueOnce({ ok: true, json: async () => ({ error: "something went wrong" }) })
+        .mockResolvedValueOnce({ ok: true, json: async () => ({ error: "something went wrong" }) })
+        // dev.to fallback also fails
+        .mockResolvedValue({ ok: true, json: async () => ({ error: "something went wrong" }) }),
     );
 
     await expect(Promise.all([fetchFeed(), vi.runAllTimersAsync()])).rejects.toThrow(
@@ -94,19 +108,69 @@ describe("fetchFeed", () => {
     );
   });
 
-  it("全リトライ失敗後はエラーをスローする", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Network error")));
+  it("全リトライ失敗後はdev.toにフォールバックする", async () => {
+    const consoleSpy = vi.spyOn(console, "warn");
+    const mockFetch = vi
+      .fn()
+      // Pinboard 3 attempts all fail
+      .mockRejectedValueOnce(new Error("Network error"))
+      .mockRejectedValueOnce(new Error("Network error"))
+      .mockRejectedValueOnce(new Error("Network error"))
+      // dev.to succeeds
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockDevToData,
+      });
+    vi.stubGlobal("fetch", mockFetch);
 
-    await expect(Promise.all([fetchFeed(), vi.runAllTimersAsync()])).rejects.toThrow(
-      "Network error",
+    const [{ articles, source }] = await Promise.all([fetchFeed(), vi.runAllTimersAsync()]);
+
+    expect(source).toBe("devto");
+    expect(articles).toHaveLength(2);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Pinboard all retries failed"),
+      expect.anything(),
     );
   });
 
-  it("全リトライ後もHTTPエラーの場合はエラーをスローする", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 503 }));
+  it("全リトライ後もHTTPエラーの場合はdev.toにフォールバックする", async () => {
+    const mockFetch = vi
+      .fn()
+      // Pinboard 3 attempts all return 503
+      .mockResolvedValueOnce({ ok: false, status: 503 })
+      .mockResolvedValueOnce({ ok: false, status: 503 })
+      .mockResolvedValueOnce({ ok: false, status: 503 })
+      // dev.to succeeds
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockDevToData,
+      });
+    vi.stubGlobal("fetch", mockFetch);
 
-    await expect(Promise.all([fetchFeed(), vi.runAllTimersAsync()])).rejects.toThrow(
-      "HTTP error: 503",
-    );
+    const [{ source }] = await Promise.all([fetchFeed(), vi.runAllTimersAsync()]);
+
+    expect(source).toBe("devto");
+  });
+
+  it("dev.toレスポンスのArticle型マッピングを検証する", async () => {
+    const mockFetch = vi
+      .fn()
+      // Pinboard fails
+      .mockRejectedValueOnce(new Error("Network error"))
+      .mockRejectedValueOnce(new Error("Network error"))
+      .mockRejectedValueOnce(new Error("Network error"))
+      // dev.to succeeds
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockDevToData,
+      });
+    vi.stubGlobal("fetch", mockFetch);
+
+    const [{ articles }] = await Promise.all([fetchFeed(), vi.runAllTimersAsync()]);
+
+    // tag_list → tags の変換
+    expect(articles[0].tags).toEqual(["js", "ts"]);
+    // description: null → "" の変換
+    expect(articles[1].description).toBe("");
   });
 });

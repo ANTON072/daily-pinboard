@@ -1,4 +1,4 @@
-import type { Env, SummarizedArticle } from "./types";
+import type { Env, FeedSource, SummarizedArticle } from "./types";
 
 const RESEND_API_URL = "https://api.resend.com/emails";
 
@@ -9,7 +9,7 @@ function formatDate(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-function buildMailBody(articles: SummarizedArticle[]): string {
+function buildMailBody(articles: SummarizedArticle[], source: FeedSource): string {
   const lines: string[] = [];
 
   for (let i = 0; i < articles.length; i++) {
@@ -22,12 +22,19 @@ function buildMailBody(articles: SummarizedArticle[]): string {
     lines.push("");
   }
 
+  const sourceLabel = source === "pinboard" ? "Pinboard" : "dev.to";
+  lines.push(`Source: ${sourceLabel}`);
+
   return lines.join("\n").trimEnd();
 }
 
-export async function sendMail(articles: SummarizedArticle[], env: Env): Promise<void> {
+export async function sendMail(
+  articles: SummarizedArticle[],
+  env: Env,
+  source: FeedSource,
+): Promise<void> {
   const subject = `[Daily Pinboard] ${formatDate(new Date())} のフロントエンド記事`;
-  const text = buildMailBody(articles);
+  const text = buildMailBody(articles, source);
 
   const res = await fetch(RESEND_API_URL, {
     method: "POST",
