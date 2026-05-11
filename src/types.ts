@@ -1,8 +1,17 @@
+export type FeedSource = "pinboard" | "devto";
+
 export interface PinboardItem {
   u: string;
   d: string;
   n: string;
   t: string[];
+}
+
+export interface DevToArticle {
+  url: string;
+  title: string;
+  description: string | null;
+  tag_list: string[];
 }
 
 export interface Article {
